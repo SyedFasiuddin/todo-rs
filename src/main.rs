@@ -33,5 +33,18 @@ fn get_todays_day() -> Day {
     }
 }
 
+fn get_file_location() -> String {
+    match std::env::var("XDG_DATA_HOME") {
+        Ok(mut val) => {
+            val.push_str("/TODO");
+            val
+        }
+        Err(e) => {
+            eprintln!("Failed reading envionment variable $XDG_DATA_HOME due to {e}");
+            std::process::exit(1);
+        }
+    }
+}
+
 fn main() {
 }
