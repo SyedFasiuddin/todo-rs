@@ -76,5 +76,35 @@ fn read_todos_from_file(file_loc: &str) -> Vec<String> {
     todos
 }
 
+fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
+    use std::fs::File;
+    use std::io::{Read, Write};
+
+    let mut buf = String::new();
+
+    let mut fd = match File::open(file_loc) {
+        Ok(fd) => fd,
+        Err(e) => {
+            eprintln!("Failed reading file: {file_loc} due to: {e}");
+            std::process::exit(1);
+        }
+    };
+    fd.read_to_string(&mut buf);
+
+    let mut fd = match File::create(file_loc) {
+        Ok(fd) => fd,
+        Err(e) => {
+            eprintln!("Failed creating file: {file_loc} due to: {e}");
+            std::process::exit(1);
+        }
+    };
+
+    buf.push_str(todays_items);
+
+    for line in buf.lines() {
+        writeln!(fd, "{line}");
+    }
+}
+
 fn main() {
 }
