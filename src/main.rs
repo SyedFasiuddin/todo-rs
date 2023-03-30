@@ -107,4 +107,33 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
 }
 
 fn main() {
+    use std::io::{Read, Write};
+
+    let file_loc = get_file_location();
+    let todos = read_todos_from_file(&file_loc);
+
+    let mut buf = String::new();
+
+    println!("Tick off the things done today:");
+    for item in todos {
+        print!("{item} (Y/n) ");
+        std::io::stdout().flush();
+
+        let mut input = String::new();
+        std::io::Stdin::read_line(&std::io::stdin(), &mut input);
+
+        if input.len() > "?\n".len() {
+            buf.push_str("X ");
+            continue;
+        }
+
+        input.pop(); // new line
+        match input.pop() {
+            Some('Y' | 'y') => buf.push_str("Y "),
+            Some(_x) => buf.push_str("X "),
+            None => buf.push_str("Y "), // Default case, if directly pressed enter
+        }
+    }
+
+    write_todays_items_to_file(&file_loc, &buf);
 }
