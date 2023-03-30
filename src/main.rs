@@ -46,5 +46,35 @@ fn get_file_location() -> String {
     }
 }
 
+fn read_todos_from_file(file_loc: &str) -> Vec<String> {
+    use std::fs::File;
+    use std::io::Read;
+
+    let mut buf = String::new();
+
+    match File::open(file_loc) {
+        Ok(mut fd) => match fd.read_to_string(&mut buf) {
+            Ok(_size) => 0,
+            Err(e) => {
+                eprintln!("Failed to read from file: {file_loc} due to: {e}");
+                std::process::exit(1);
+            }
+        }
+        Err(e) => {
+            eprintln!("Failed to open the file due to: {e}");
+            std::process::exit(1);
+        }
+    };
+
+    let first_line = buf.lines().next().unwrap();
+
+    let mut todos: Vec<String> = vec![];
+    for str in first_line.split_whitespace() {
+        todos.push(str.to_string());
+    }
+
+    todos
+}
+
 fn main() {
 }
