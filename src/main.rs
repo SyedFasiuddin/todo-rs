@@ -106,21 +106,18 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
     }
 }
 
-fn main() {
-    use std::io::{Read, Write};
-
-    let file_loc = get_file_location();
-    let todos = read_todos_from_file(&file_loc);
+fn get_completion_info(todos: Vec<String>) -> String {
+    use std::io::Write;
 
     let mut buf = String::new();
 
     println!("Tick off the things done today:");
     for item in todos {
         print!("{item} (Y/n) ");
-        std::io::stdout().flush();
+        std::io::stdout().flush().unwrap();
 
         let mut input = String::new();
-        std::io::Stdin::read_line(&std::io::stdin(), &mut input);
+        std::io::Stdin::read_line(&std::io::stdin(), &mut input).expect("Unable to get input");
 
         if input.len() > "?\n".len() {
             buf.push_str("X ");
@@ -134,6 +131,20 @@ fn main() {
             None => buf.push_str("Y "), // Default case, if directly pressed enter
         }
     }
+    buf
+}
 
-    write_todays_items_to_file(&file_loc, &buf);
+fn main() {
+    let today = get_todays_day();
+    let file_loc = get_file_location();
+
+    match today {
+        Day::Mon => todo!(),
+        Day::Sun => todo!(),
+        _ => {
+            let todos = read_todos_from_file(&file_loc);
+            let input = get_completion_info(todos);
+            write_todays_items_to_file(&file_loc, &input);
+        }
+    }
 }
