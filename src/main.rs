@@ -135,11 +135,43 @@ fn get_completion_info(todos: Vec<String>) -> String {
 }
 
 fn main() {
+    use std::io::Write;
+    use std::fs::File;
+
     let today = get_todays_day();
     let file_loc = get_file_location();
 
     match today {
-        Day::Mon => todo!(),
+        Day::Mon => {
+            let mut fd = match File::create(&file_loc) {
+                Ok(fd) => fd,
+                Err(e) => {
+                    eprintln!("Failed reading file: {file_loc} due to: {e}");
+                    std::process::exit(1);
+                }
+            };
+
+            println!("What are you planning to do everyday of this week?");
+            print!("Enter a comma separated list of items: ");
+            std::io::stdout().flush().unwrap();
+
+            let mut input = String::new();
+            std::io::Stdin::read_line(&std::io::stdin(), &mut input).expect("Unable to get input");
+
+            let mut todos: Vec<String> = vec![];
+            for todo in input.split(",") {
+                todos.push(todo.trim().to_string());
+            }
+
+            for item in &todos {
+                write!(fd, "{item} ").expect("unable to write to file");
+            }
+            writeln!(fd, "").expect("unable to write to file");
+
+            let input = get_completion_info(todos);
+            write_todays_items_to_file(&file_loc, &input);
+        }
+
         Day::Sun => todo!(),
         _ => {
             let todos = read_todos_from_file(&file_loc);
