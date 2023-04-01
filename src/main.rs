@@ -1,10 +1,12 @@
+use std::fs::File;
+use std::io::{Read, Write};
+use std::time::SystemTime;
+
 enum Day {
     Mon, Tue, Wed, Thu, Fri, Sat, Sun,
 }
 
 fn get_todays_day() -> Day {
-    use std::time::SystemTime;
-
     let day_of_week: u64;
 
     match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
@@ -47,9 +49,6 @@ fn get_file_location() -> String {
 }
 
 fn read_todos_from_file(file_loc: &str) -> Vec<String> {
-    use std::fs::File;
-    use std::io::Read;
-
     let mut buf = String::new();
 
     match File::open(file_loc) {
@@ -77,8 +76,6 @@ fn read_todos_from_file(file_loc: &str) -> Vec<String> {
 }
 
 fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
-    use std::fs::File;
-    use std::io::{Read, Write};
 
     let mut buf = String::new();
 
@@ -107,8 +104,6 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
 }
 
 fn get_completion_info(todos: Vec<String>) -> String {
-    use std::io::Write;
-
     let mut buf = String::new();
 
     println!("Tick off the things done today:");
@@ -135,9 +130,6 @@ fn get_completion_info(todos: Vec<String>) -> String {
 }
 
 fn main() {
-    use std::io::{Read, Write};
-    use std::fs::File;
-
     let today = get_todays_day();
     let file_loc = get_file_location();
 
