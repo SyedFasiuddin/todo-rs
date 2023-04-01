@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{Read, Write};
+use std::io::{stdin, stdout, Read, Stdin, Write};
 use std::process::exit;
 use std::time::SystemTime;
 
@@ -128,10 +128,10 @@ fn get_completion_info(todos: Vec<String>) -> String {
     println!("Tick off the things done today:");
     for item in todos {
         print!("{item} (Y/n) ");
-        std::io::stdout().flush().unwrap();
+        stdout().flush().unwrap();
 
         let mut input = String::new();
-        std::io::Stdin::read_line(&std::io::stdin(), &mut input).expect("Unable to get input");
+        Stdin::read_line(&stdin(), &mut input).expect("Unable to get input");
 
         if input.len() > "?\n".len() {
             buf.push_str("X ");
@@ -164,10 +164,10 @@ fn main() {
 
             println!("What are you planning to do everyday of this week?");
             print!("Enter a comma separated list of items: ");
-            std::io::stdout().flush().unwrap();
+            stdout().flush().unwrap();
 
             let mut input = String::new();
-            std::io::Stdin::read_line(&std::io::stdin(), &mut input).expect("Unable to get input");
+            Stdin::read_line(&stdin(), &mut input).expect("Unable to get input");
 
             let mut todos: Vec<String> = vec![];
             for todo in input.split(',') {
@@ -241,7 +241,8 @@ fn main() {
                 ┏━{:━>max_length$}━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┓\n\
                 ┃ {: >max_length$} ┃ Mon ┃ Tue ┃ Wed ┃ Thu ┃ Fri ┃ Sat ┃ Sun ┃\n\
                 ┣━{:━>max_length$}━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━┫",
-                "━", " ", "━");
+                "━", " ", "━"
+            );
 
             let foot = format!(
                 "┗━{:━>max_length$}━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┛",
