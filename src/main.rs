@@ -7,13 +7,11 @@ enum Day {
 }
 
 fn get_todays_day() -> Day {
-    let day_of_week: u64;
-
-    match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
+    let day_of_week = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
         Ok(n) => {
             let sec = n.as_secs();
             let days_since_epoch = sec / (24 * 60 * 60);
-            day_of_week = days_since_epoch % 7
+            days_since_epoch % 7
         }
         Err(e) => {
             eprintln!("Failed getting system time due to: {e}");
@@ -165,14 +163,14 @@ fn main() {
             std::io::Stdin::read_line(&std::io::stdin(), &mut input).expect("Unable to get input");
 
             let mut todos: Vec<String> = vec![];
-            for todo in input.split(",") {
+            for todo in input.split(',') {
                 todos.push(todo.trim().to_string());
             }
 
             for item in &todos {
                 write!(fd, "{item} ").expect("unable to write to file");
             }
-            writeln!(fd, "").expect("unable to write to file");
+            writeln!(fd).expect("unable to write to file");
 
             let input = get_completion_info(todos);
             write_todays_items_to_file(&file_loc, &input);
@@ -206,7 +204,7 @@ fn main() {
             let mut max_length = usize::MIN;
 
             let first_line = lines.clone();
-            let first_line = first_line.iter().next().unwrap();
+            let first_line = first_line.first().unwrap();
             let t = first_line.split_whitespace().collect::<Vec<&str>>();
             for todo in t {
                 max_length = std::cmp::max(todo.len(), max_length);
@@ -223,7 +221,7 @@ fn main() {
                 for (idx, done) in x.iter().enumerate() {
                     todos[idx].push_str(" ┃  ");
                     todos[idx].push_str(done);
-                    todos[idx].push_str(" ");
+                    todos[idx].push(' ');
                 }
             }
             for (idx, todo) in todos.iter_mut().enumerate() {
