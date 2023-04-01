@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::{Read, Write};
+use std::process::exit;
 use std::time::SystemTime;
 
 enum Day {
@@ -21,7 +22,7 @@ fn get_todays_day() -> Day {
         }
         Err(e) => {
             eprintln!("Failed getting system time due to: {e}");
-            std::process::exit(1);
+            exit(1);
         }
     };
 
@@ -48,7 +49,7 @@ fn get_file_location() -> String {
         }
         Err(e) => {
             eprintln!("Failed reading envionment variable $XDG_DATA_HOME due to {e}");
-            std::process::exit(1);
+            exit(1);
         }
     }
 }
@@ -61,12 +62,12 @@ fn read_todos_from_file(file_loc: &str) -> Vec<String> {
             Ok(_size) => 0,
             Err(e) => {
                 eprintln!("Failed to read from file: {file_loc} due to: {e}");
-                std::process::exit(1);
+                exit(1);
             }
         },
         Err(e) => {
             eprintln!("Failed to open the file due to: {e}");
-            std::process::exit(1);
+            exit(1);
         }
     };
 
@@ -87,14 +88,14 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
         Ok(fd) => fd,
         Err(e) => {
             eprintln!("Failed reading file: {file_loc} due to: {e}");
-            std::process::exit(1);
+            exit(1);
         }
     };
     match fd.read_to_string(&mut buf) {
         Ok(x) => x,
         Err(e) => {
             eprintln!("Failed reading file {file_loc} due to: {e}\nAborting due to previous error");
-            std::process::exit(1);
+            exit(1);
         }
     };
 
@@ -102,7 +103,7 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
         Ok(fd) => fd,
         Err(e) => {
             eprintln!("Failed creating file: {file_loc} due to: {e}");
-            std::process::exit(1);
+            exit(1);
         }
     };
 
@@ -115,7 +116,7 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
                 eprintln!(
                     "Failed writing to file: {fd:?} due to: {e}\nAborting due to previous error"
                 );
-                std::process::exit(1);
+                exit(1);
             }
         }
     }
@@ -157,7 +158,7 @@ fn main() {
                 Ok(fd) => fd,
                 Err(e) => {
                     eprintln!("Failed reading file: {file_loc} due to: {e}");
-                    std::process::exit(1);
+                    exit(1);
                 }
             };
 
@@ -194,12 +195,12 @@ fn main() {
                     Ok(_size) => 0,
                     Err(e) => {
                         eprintln!("Failed to read from file: {file_loc} due to: {e}");
-                        std::process::exit(1);
+                        exit(1);
                     }
                 },
                 Err(e) => {
                     eprintln!("Failed to open the file due to: {e}");
-                    std::process::exit(1);
+                    exit(1);
                 }
             };
 
