@@ -135,7 +135,7 @@ fn get_completion_info(todos: Vec<String>) -> String {
 }
 
 fn main() {
-    use std::io::Write;
+    use std::io::{Read, Write};
     use std::fs::File;
 
     let today = get_todays_day();
@@ -172,7 +172,75 @@ fn main() {
             write_todays_items_to_file(&file_loc, &input);
         }
 
-        Day::Sun => todo!(),
+        Day::Sun => {
+
+            let todos = read_todos_from_file(&file_loc);
+            let input = get_completion_info(todos);
+            let input: Vec<&str> = input.split_whitespace().collect();
+
+            let mut buf = String::new();
+
+            match File::open(&file_loc) {
+                Ok(mut fd) => match fd.read_to_string(&mut buf) {
+                    Ok(_size) => 0,
+                    Err(e) => {
+                        eprintln!("Failed to read from file: {file_loc} due to: {e}");
+                        std::process::exit(1);
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Failed to open the file due to: {e}");
+                    std::process::exit(1);
+                }
+            };
+
+            let mut todos: Vec<String> = vec![];
+
+            let lines = buf.lines().collect::<Vec<&str>>();
+            let mut max_length = usize::MIN;
+
+            let first_line = lines.clone();
+            let first_line = first_line.iter().next().unwrap();
+            let t = first_line.split_whitespace().collect::<Vec<&str>>();
+            for todo in t {
+                max_length = std::cmp::max(todo.len(), max_length);
+            }
+
+            for (idx, line) in lines.iter().enumerate() {
+                let x = line.split_whitespace().collect::<Vec<&str>>();
+                if idx == 0 {
+                    for y in x.iter() {
+                        todos.push(format!("┃ {: <max_length$}", y));
+                    }
+                    continue;
+                }
+                for (idx, done) in x.iter().enumerate() {
+                    todos[idx].push_str(" ┃  ");
+                    todos[idx].push_str(done);
+                    todos[idx].push_str(" ");
+                }
+            }
+            for (idx, todo) in todos.iter_mut().enumerate() {
+                todo.push_str(" ┃  ");
+                todo.push_str(input[idx]);
+                todo.push_str("  ┃");
+            }
+
+            let head = format!(
+                "Weekly Stuff:\n┏━{:━>max_length$}━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┓\n┃ {:>max_length$} ┃ Mon ┃ Tue ┃ Wed ┃ Thu ┃ Fri ┃ Sat ┃ Sun ┃\n┣━{:━>max_length$}━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━┫",
+                "━", " ", "━");
+
+
+            let foot = format!("┗━{:━>max_length$}━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┛", "━");
+
+            println!("{head}");
+            for todo in todos {
+                println!("{todo}");
+            }
+            println!("{foot}");
+
+        }
+
         _ => {
             let todos = read_todos_from_file(&file_loc);
             let input = get_completion_info(todos);
