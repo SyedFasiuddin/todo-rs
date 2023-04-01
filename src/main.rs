@@ -122,7 +122,7 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
     }
 }
 
-fn get_completion_info(todos: Vec<String>) -> String {
+fn get_completion_info(todos: &[String]) -> String {
     let mut buf = String::new();
 
     println!("Tick off the things done today:");
@@ -179,13 +179,13 @@ fn main() {
             }
             writeln!(fd).expect("unable to write to file");
 
-            let input = get_completion_info(todos);
+            let input = get_completion_info(&todos[..]);
             write_todays_items_to_file(&file_loc, &input);
         }
 
         Day::Sun => {
             let todos = read_todos_from_file(&file_loc);
-            let input = get_completion_info(todos);
+            let input = get_completion_info(&todos[..]);
             let input: Vec<&str> = input.split_whitespace().collect();
 
             let mut buf = String::new();
@@ -258,7 +258,7 @@ fn main() {
 
         _ => {
             let todos = read_todos_from_file(&file_loc);
-            let input = get_completion_info(todos);
+            let input = get_completion_info(&todos[..]);
             write_todays_items_to_file(&file_loc, &input);
         }
     }
