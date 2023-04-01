@@ -184,7 +184,7 @@ fn main() {
         }
 
         Day::Sun => {
-            let todos = read_todos_from_file(&file_loc);
+            let mut todos = read_todos_from_file(&file_loc);
             let input = get_completion_info(&todos[..]);
             let input: Vec<&str> = input.split_whitespace().collect();
 
@@ -204,36 +204,28 @@ fn main() {
                 }
             };
 
-            let mut todos: Vec<String> = vec![];
-
             let lines = buf.lines().collect::<Vec<&str>>();
             let mut max_length = usize::MIN;
 
-            let first_line = lines.clone();
-            let first_line = first_line.first().unwrap();
-            let t = first_line.split_whitespace().collect::<Vec<&str>>();
-            for todo in t {
+            for todo in &todos {
                 max_length = std::cmp::max(todo.len(), max_length);
             }
 
             for (idx, line) in lines.iter().enumerate() {
-                let x = line.split_whitespace().collect::<Vec<&str>>();
+                let split_line = line.split_whitespace().collect::<Vec<&str>>();
                 if idx == 0 {
-                    for y in x.iter() {
-                        todos.push(format!("┃ {: <max_length$}", y));
+                    for (idx, todo) in split_line.iter().enumerate() {
+                        todos.remove(input.len() - idx - 1);
+                        todos.push(format!("┃ {: <max_length$}", todo)); // todo item name
                     }
                     continue;
                 }
-                for (idx, done) in x.iter().enumerate() {
-                    todos[idx].push_str(" ┃  ");
-                    todos[idx].push_str(done);
-                    todos[idx].push(' ');
+                for (idx, item_completion) in split_line.iter().enumerate() {
+                    todos[idx].push_str(&format!(" ┃  {item_completion} ")) // week day items
                 }
             }
-            for (idx, todo) in todos.iter_mut().enumerate() {
-                todo.push_str(" ┃  ");
-                todo.push_str(input[idx]);
-                todo.push_str("  ┃");
+            for (idx, todo_line) in todos.iter_mut().enumerate() {
+                todo_line.push_str(&format!(" ┃  {}  ┃", input[idx])); // sunday item
             }
 
             let head = format!(
