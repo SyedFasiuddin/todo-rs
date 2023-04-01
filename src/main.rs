@@ -1,3 +1,5 @@
+use std::cmp::max;
+use std::env;
 use std::fs::File;
 use std::io::{stdin, stdout, Read, Write};
 use std::process::exit;
@@ -42,7 +44,7 @@ fn get_todays_day() -> Day {
 }
 
 fn get_file_location() -> String {
-    match std::env::var("XDG_DATA_HOME") {
+    match env::var("XDG_DATA_HOME") {
         Ok(mut val) => {
             val.push_str("/TODO");
             val
@@ -208,7 +210,7 @@ fn main() {
             let mut max_length = usize::MIN;
 
             for todo in &todos {
-                max_length = std::cmp::max(todo.len(), max_length);
+                max_length = max(todo.len(), max_length);
             }
 
             for (idx, line) in lines.iter().enumerate() {
