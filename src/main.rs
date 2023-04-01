@@ -86,7 +86,14 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
             std::process::exit(1);
         }
     };
-    fd.read_to_string(&mut buf);
+    match fd.read_to_string(&mut buf) {
+        Ok(x) => x,
+        Err(e) => {
+            eprintln!("Failed reading file {file_loc} due to: {e}\nAborting due to previous
+                      error");
+            std::process::exit(1);
+        }
+    };
 
     let mut fd = match File::create(file_loc) {
         Ok(fd) => fd,
@@ -99,7 +106,14 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
     buf.push_str(todays_items);
 
     for line in buf.lines() {
-        writeln!(fd, "{line}");
+        match writeln!(fd, "{line}") {
+            Ok(()) => continue,
+            Err(e) => {
+                eprintln!("Failed writing to file: {fd:?} due to: {e}\nAborting due to previous
+                          error");
+                std::process::exit(1);
+            }
+        }
     }
 }
 
