@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{stdin, stdout, Read, Stdin, Write};
+use std::io::{stdin, stdout, Read, Write};
 use std::process::exit;
 use std::time::SystemTime;
 
@@ -131,7 +131,7 @@ fn get_completion_info(todos: &[String]) -> String {
         stdout().flush().unwrap();
 
         let mut input = String::new();
-        Stdin::read_line(&stdin(), &mut input).expect("Unable to get input");
+        stdin().read_line(&mut input).expect("Unable to get input");
 
         if input.len() > "?\n".len() {
             buf.push_str("X ");
@@ -167,7 +167,7 @@ fn main() {
             stdout().flush().unwrap();
 
             let mut input = String::new();
-            Stdin::read_line(&stdin(), &mut input).expect("Unable to get input");
+            stdin().read_line(&mut input).expect("Unable to get input");
 
             let mut todos: Vec<String> = vec![];
             for todo in input.split(',') {
