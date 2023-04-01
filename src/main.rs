@@ -3,7 +3,13 @@ use std::io::{Read, Write};
 use std::time::SystemTime;
 
 enum Day {
-    Mon, Tue, Wed, Thu, Fri, Sat, Sun,
+    Mon,
+    Tue,
+    Wed,
+    Thu,
+    Fri,
+    Sat,
+    Sun,
 }
 
 fn get_todays_day() -> Day {
@@ -28,8 +34,9 @@ fn get_todays_day() -> Day {
         4 => Day::Mon,
         5 => Day::Tue,
         6 => Day::Wed,
-        _ => unreachable!("Wrong day of the week, this should never be the case unless my
-                          calculations are wrong"),
+        _ => unreachable!(
+            "Wrong day of the week, this should never be the case unless my calculations are wrong"
+        ),
     }
 }
 
@@ -56,7 +63,7 @@ fn read_todos_from_file(file_loc: &str) -> Vec<String> {
                 eprintln!("Failed to read from file: {file_loc} due to: {e}");
                 std::process::exit(1);
             }
-        }
+        },
         Err(e) => {
             eprintln!("Failed to open the file due to: {e}");
             std::process::exit(1);
@@ -74,7 +81,6 @@ fn read_todos_from_file(file_loc: &str) -> Vec<String> {
 }
 
 fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
-
     let mut buf = String::new();
 
     let mut fd = match File::open(file_loc) {
@@ -87,8 +93,7 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
     match fd.read_to_string(&mut buf) {
         Ok(x) => x,
         Err(e) => {
-            eprintln!("Failed reading file {file_loc} due to: {e}\nAborting due to previous
-                      error");
+            eprintln!("Failed reading file {file_loc} due to: {e}\nAborting due to previous error");
             std::process::exit(1);
         }
     };
@@ -107,8 +112,9 @@ fn write_todays_items_to_file(file_loc: &str, todays_items: &str) {
         match writeln!(fd, "{line}") {
             Ok(()) => continue,
             Err(e) => {
-                eprintln!("Failed writing to file: {fd:?} due to: {e}\nAborting due to previous
-                          error");
+                eprintln!(
+                    "Failed writing to file: {fd:?} due to: {e}\nAborting due to previous error"
+                );
                 std::process::exit(1);
             }
         }
@@ -177,7 +183,6 @@ fn main() {
         }
 
         Day::Sun => {
-
             let todos = read_todos_from_file(&file_loc);
             let input = get_completion_info(todos);
             let input: Vec<&str> = input.split_whitespace().collect();
@@ -191,7 +196,7 @@ fn main() {
                         eprintln!("Failed to read from file: {file_loc} due to: {e}");
                         std::process::exit(1);
                     }
-                }
+                },
                 Err(e) => {
                     eprintln!("Failed to open the file due to: {e}");
                     std::process::exit(1);
@@ -234,15 +239,16 @@ fn main() {
                 "Weekly Stuff:\n┏━{:━>max_length$}━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┓\n┃ {:>max_length$} ┃ Mon ┃ Tue ┃ Wed ┃ Thu ┃ Fri ┃ Sat ┃ Sun ┃\n┣━{:━>max_length$}━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━┫",
                 "━", " ", "━");
 
-
-            let foot = format!("┗━{:━>max_length$}━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┛", "━");
+            let foot = format!(
+                "┗━{:━>max_length$}━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┛",
+                "━"
+            );
 
             println!("{head}");
             for todo in todos {
                 println!("{todo}");
             }
             println!("{foot}");
-
         }
 
         _ => {
