@@ -5,6 +5,7 @@ use std::io::{stdin, stdout, Read, Write};
 use std::process::exit;
 use std::time::SystemTime;
 
+#[derive(Debug, PartialEq)]
 enum Day {
     Mon,
     Tue,
@@ -13,6 +14,22 @@ enum Day {
     Fri,
     Sat,
     Sun,
+}
+
+fn get_day(day_of_week: u64) -> Day {
+    // UNIX_EPOCH i.e. Jan 1, 1970 was Thu which means 0 will be Thu
+    match day_of_week {
+        0 => Day::Thu,
+        1 => Day::Fri,
+        2 => Day::Sat,
+        3 => Day::Sun,
+        4 => Day::Mon,
+        5 => Day::Tue,
+        6 => Day::Wed,
+        _ => unreachable!(
+            "Wrong day of the week, this should never be the case unless my calculations are wrong"
+        ),
+    }
 }
 
 fn get_todays_day() -> Day {
@@ -28,19 +45,21 @@ fn get_todays_day() -> Day {
         }
     };
 
-    // UNIX_EPOCH i.e. Jan 1, 1970 was Thu which means 0 will be Thu
-    match day_of_week {
-        0 => Day::Thu,
-        1 => Day::Fri,
-        2 => Day::Sat,
-        3 => Day::Sun,
-        4 => Day::Mon,
-        5 => Day::Tue,
-        6 => Day::Wed,
-        _ => unreachable!(
-            "Wrong day of the week, this should never be the case unless my calculations are wrong"
-        ),
-    }
+    get_day(day_of_week)
+}
+
+fn get_last_accessed_day(file_loc: &str) -> Day {
+    let last_accessed_time = File::open(&file_loc)
+        .expect("Something went wrong with opening the file")
+        .metadata()
+        .expect("Something went wrong with getting the metadata of file")
+        .accessed()
+        .expect("Sometihng went wrong with getting the last accessed time of file");
+    let duration = last_accessed_time
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .expect("Something went wrong while calculating the duration since epoch");
+
+    get_day((duration.as_secs() / (24 * 60 * 60)) % 7)
 }
 
 fn get_file_location() -> String {
@@ -154,6 +173,12 @@ fn main() {
     let today = get_todays_day();
     let file_loc = get_file_location();
 
+    let last_accessed_day = get_last_accessed_day(&file_loc);
+    if last_accessed_day == today {
+        println!("Already entered completion info for today, see you tomorrow.");
+        exit(1);
+    }
+
     match today {
         Day::Mon => {
             let mut fd = match File::create(&file_loc) {
@@ -164,8 +189,9 @@ fn main() {
                 }
             };
 
-            println!("What are you planning to do everyday of this week?");
-            print!("Enter a comma separated list of items: ");
+            let str = "What are you planning to do everyday of this week?\n\
+                       Enter a comma separated list of items: ";
+            print!("{str}");
             stdout().flush().unwrap();
 
             let mut input = String::new();
