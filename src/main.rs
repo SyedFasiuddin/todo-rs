@@ -49,12 +49,12 @@ fn get_todays_day() -> Day {
 }
 
 fn get_last_accessed_day(file_loc: &str) -> Day {
-    let last_accessed_time = File::open(&file_loc)
+    let last_accessed_time = File::open(file_loc)
         .expect("Something went wrong with opening the file")
         .metadata()
         .expect("Something went wrong with getting the metadata of file")
-        .accessed()
-        .expect("Sometihng went wrong with getting the last accessed time of file");
+        .modified()
+        .expect("Sometihng went wrong with getting the last modified time of file");
     let duration = last_accessed_time
         .duration_since(SystemTime::UNIX_EPOCH)
         .expect("Something went wrong while calculating the duration since epoch");
@@ -162,7 +162,7 @@ fn get_completion_info(todos: &[String]) -> String {
         input.pop(); // new line
         match input.pop() {
             Some('Y' | 'y') => buf.push_str("Y "),
-            Some(_x) => buf.push_str("X "),
+            Some(_) => buf.push_str("X "),
             None => buf.push_str("Y "), // Default case, if directly pressed enter
         }
     }
