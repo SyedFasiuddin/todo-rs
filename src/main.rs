@@ -81,7 +81,7 @@ impl State {
         };
 
         match writeln!(fd, "{content}") {
-            Ok(_) => todo!(),
+            Ok(_) => (),
             Err(e) => {
                 eprintln!("Failed writing serialized data to file due to: {e}");
                 exit(1);
