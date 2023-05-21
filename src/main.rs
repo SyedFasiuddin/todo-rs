@@ -179,17 +179,17 @@ fn main() {
     let today = get_todays_day();
     let file_loc = get_file_location();
 
-    let last_accessed_day = get_last_accessed_day(&file_loc);
-    if last_accessed_day == today {
+    if today == get_last_accessed_day(&file_loc) {
         println!("Already entered completion info for today, see you tomorrow.");
         exit(1);
     }
 
     match today {
         Day::Mon => {
-            let str = "What are you planning to do everyday of this week?\n\
-                       Enter a comma separated list of items: ";
-            print!("{str}");
+            print!(
+                "What are you planning to do everyday of this week?\n\
+                 Enter a comma separated list of items: "
+            );
             stdout().flush().unwrap();
 
             let mut input = String::new();
@@ -220,13 +220,13 @@ fn main() {
                 // todo item name
                 let mut str = format!("┃ {: <max_length$}", todo);
 
-                str.push_str(&format!(" ┃ {} ", state.mon.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃ {} ", state.tue.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃ {} ", state.wed.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃ {} ", state.thu.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃ {} ", state.fri.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃ {} ", state.sat.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃ {} ", state.sun.get(idx).unwrap_or(&'?')));
+                str.push_str(&format!(" ┃  {} ", state.mon.get(idx).unwrap_or(&'?')));
+                str.push_str(&format!(" ┃  {} ", state.tue.get(idx).unwrap_or(&'?')));
+                str.push_str(&format!(" ┃  {} ", state.wed.get(idx).unwrap_or(&'?')));
+                str.push_str(&format!(" ┃  {} ", state.thu.get(idx).unwrap_or(&'?')));
+                str.push_str(&format!(" ┃  {} ", state.fri.get(idx).unwrap_or(&'?')));
+                str.push_str(&format!(" ┃  {} ", state.sat.get(idx).unwrap_or(&'?')));
+                str.push_str(&format!(" ┃  {}  ┃", state.sun.get(idx).unwrap_or(&'?')));
 
                 lines.push(str);
             }
