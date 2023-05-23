@@ -197,7 +197,7 @@ fn main() {
 
             let mut state = State::new();
             for todo in input.split(',') {
-                state.add_todo(todo);
+                state.add_todo(todo.trim());
             }
 
             let input = get_completion_info(&state.todos[..]);
@@ -217,38 +217,38 @@ fn main() {
 
             let mut lines: Vec<String> = vec![];
             for (idx, todo) in state.todos.iter().enumerate() {
-                // todo item name
-                let mut str = format!("┃ {: <max_length$}", todo);
-
-                str.push_str(&format!(" ┃  {} ", state.mon.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃  {} ", state.tue.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃  {} ", state.wed.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃  {} ", state.thu.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃  {} ", state.fri.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃  {} ", state.sat.get(idx).unwrap_or(&'?')));
-                str.push_str(&format!(" ┃  {}  ┃", state.sun.get(idx).unwrap_or(&'?')));
+                let question_mark = &'?';
+                let str = format!(
+                    "┃ {: <max_length$} ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃",
+                    todo,
+                    state.mon.get(idx).unwrap_or(question_mark),
+                    state.tue.get(idx).unwrap_or(question_mark),
+                    state.wed.get(idx).unwrap_or(question_mark),
+                    state.thu.get(idx).unwrap_or(question_mark),
+                    state.fri.get(idx).unwrap_or(question_mark),
+                    state.sat.get(idx).unwrap_or(question_mark),
+                    state.sun.get(idx).unwrap_or(question_mark)
+                );
 
                 lines.push(str);
             }
 
-            let head = format!(
+            let mut out = format!(
                 "Weekly Stuff:\n\
                 ┏━{:━>max_length$}━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┓\n\
                 ┃ {: >max_length$} ┃ Mon ┃ Tue ┃ Wed ┃ Thu ┃ Fri ┃ Sat ┃ Sun ┃\n\
                 ┣━{:━>max_length$}━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━┫",
                 "━", " ", "━"
             );
-
-            let foot = format!(
+            for line in lines {
+                out.push_str(&line);
+            }
+            out.push_str(&format!(
                 "┗━{:━>max_length$}━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┻━━━━━┛",
                 "━"
-            );
+            ));
 
-            println!("{head}");
-            for line in lines {
-                println!("{line}");
-            }
-            println!("{foot}");
+            println!("{out}");
         }
 
         _ => {
