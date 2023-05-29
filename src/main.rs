@@ -55,7 +55,7 @@ impl State {
     }
 
     fn add_todo(&mut self, todo: &str) {
-        self.todos.push(todo.to_string());
+        self.todos.push(todo.trim().to_string());
     }
 
     fn save_completion_info(&mut self, today: Day, v: Vec<char>) {
@@ -197,7 +197,7 @@ fn main() {
 
             let mut state = State::new();
             for todo in input.split(',') {
-                state.add_todo(todo.trim());
+                state.add_todo(todo);
             }
 
             let input = get_completion_info(&state.todos[..]);
