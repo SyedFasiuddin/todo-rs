@@ -179,6 +179,21 @@ fn main() {
     let today = get_todays_day();
     let file_loc = get_file_location();
 
+    let argv: Vec<String> = env::args().collect();
+    if argv.len() > 2 {
+        eprintln!("Unexpected number of arguments provided.");
+        exit(1);
+    } else if argv.len() == 2 {
+        if argv[1] == "-l" || argv[1] == "--list" {
+            let state = State::read_state_from_file(&file_loc);
+            println!("{}", state.todos.join(", "));
+            exit(0);
+        } else {
+            eprintln!("Unexpected argument.");
+            exit(1);
+        }
+    }
+
     if today == get_last_accessed_day(&file_loc) {
         println!("Already entered completion info for today, see you tomorrow.");
         exit(1);
