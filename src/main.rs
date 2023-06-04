@@ -234,7 +234,7 @@ fn main() {
             for (idx, todo) in state.todos.iter().enumerate() {
                 let question_mark = &'?';
                 let str = format!(
-                    "┃ {: <max_length$} ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃",
+                    "┃ {: <max_length$} ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃  {}  ┃\n",
                     todo,
                     state.mon.get(idx).unwrap_or(question_mark),
                     state.tue.get(idx).unwrap_or(question_mark),
@@ -252,7 +252,7 @@ fn main() {
                 "Weekly Stuff:\n\
                 ┏━{:━>max_length$}━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┓\n\
                 ┃ {: >max_length$} ┃ Mon ┃ Tue ┃ Wed ┃ Thu ┃ Fri ┃ Sat ┃ Sun ┃\n\
-                ┣━{:━>max_length$}━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━┫",
+                ┣━{:━>max_length$}━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━╋━━━━━┫\n",
                 "━", " ", "━"
             );
             for line in lines {
